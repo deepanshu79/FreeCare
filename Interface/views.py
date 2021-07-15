@@ -4,6 +4,7 @@ from django import forms
 import pickle
 import numpy as np
 import wikipediaapi
+import requests
 
 
 # Create your views here.
@@ -105,3 +106,84 @@ def details(request):
     page_py = wiki_wiki.page(val)
     
     return render(request, "details.html", {'content' : page_py.text, 'head' : val })
+
+def location(request):
+    URL = "https://discover.search.hereapi.com/v1/discover"
+    coordinates = request.GET.get('val')
+    index = coordinates.find(",")
+    latitude = float(coordinates[:index-1])
+    longitude = float(coordinates[index+1:])
+    # latitude = 28.715569801497598
+    # longitude = 77.26764160851835
+    api_key = 'zuUMa9gijqbsVTdaCE4xbmvferkdQgb8BdmHB4lgAWQ'
+    query = 'hospitals'
+    limit = 10
+
+    PARAMS = {
+                'apikey':api_key,
+                'q':query,
+                'limit': limit,
+                'at':'{},{}'.format(latitude,longitude)
+            } 
+
+    # sending get request and saving the response as response object 
+    r = requests.get(url = URL, params = PARAMS) 
+    data = r.json()
+
+
+    hospitalOne = data['items'][0]['title']
+    hospitalOne_address =  data['items'][0]['address']['label']
+    # hospitalOne_latitude = data['items'][0]['position']['lat']
+    # hospitalOne_longitude = data['items'][0]['position']['lng']
+
+    hospitalTwo = data['items'][1]['title']
+    hospitalTwo_address =  data['items'][1]['address']['label']
+
+    hospitalThree = data['items'][2]['title']
+    hospitalThree_address =  data['items'][2]['address']['label']
+
+    hospitalFour = data['items'][3]['title']
+    hospitalFour_address =  data['items'][3]['address']['label']
+
+    hospitalFive = data['items'][4]['title']
+    hospitalFive_address =  data['items'][4]['address']['label']
+
+    hospitalSix = data['items'][5]['title']
+    hospitalSix_address =  data['items'][5]['address']['label']
+
+    hospitalSeven = data['items'][6]['title']
+    hospitalSeven_address =  data['items'][6]['address']['label']
+
+    hospitalEight = data['items'][7]['title']
+    hospitalEight_address =  data['items'][7]['address']['label']
+
+    hospitalNine = data['items'][8]['title']
+    hospitalNine_address =  data['items'][8]['address']['label']
+
+    hospitalTen = data['items'][9]['title']
+    hospitalTen_address =  data['items'][9]['address']['label']
+
+    result = []
+    result.append(hospitalOne)
+    result.append(hospitalOne_address)
+    result.append(hospitalTwo)
+    result.append(hospitalTwo_address)
+    result.append(hospitalThree)
+    result.append(hospitalThree_address)
+    result.append(hospitalFour)
+    result.append(hospitalFour_address)
+    result.append(hospitalFive)
+    result.append(hospitalFive_address)
+    result.append(hospitalSix)
+    result.append(hospitalSix_address)
+    result.append(hospitalSeven)
+    result.append(hospitalSeven_address)
+    result.append(hospitalEight)
+    result.append(hospitalEight_address)
+    result.append(hospitalNine)
+    result.append(hospitalNine_address)
+    result.append(hospitalTen)
+    result.append(hospitalTen_address)
+
+    return render(request, "hospital.html", {'result' : result })
+

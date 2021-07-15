@@ -3,13 +3,32 @@
 {% block body %}
     <br>
     <br>
-    <h2> Prediction results:</h2>
+    <h2><u> Prediction results </u></h2>
         <br>
         <br>
         <br>
-        <br>
-        <div>
+        <div style="font-size:20px;">
             Disease  :  <a href = "/details/?val={{ form.0 }}" > {{form.0}} </a>
+            <br>
+            <br>
         </div>
+        <br>        
+
+        <button style = "width:200px; background-color: #089c92 ; border-radius: 3px; height:40px; color:white "  onclick="getLocation()">Nearby hospitals</button>
+
+        <script>
+        var x = "";
+        var url="{% url 'hospitals' %}";
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } 
+        }
+        function showPosition(position) {
+            x = position.coords.latitude + "," + position.coords.longitude;
+            document.location.href = url + "?val=" + x;
+        }
+        </script>
         <br>
 {% endblock %}
